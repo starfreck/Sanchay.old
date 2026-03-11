@@ -8,5 +8,10 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinJvm) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.ktor) apply false
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.kotlin.plugin.spring) apply false
+    alias(libs.plugins.kotlin.plugin.jpa) apply false
+    alias(libs.plugins.hibernate.orm) apply false
+    alias(libs.plugins.graalvm.native) apply false
 }

@@ -18,6 +18,20 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM
   The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
   can add code to the platform-specific folders here too.
 
+---
+
+### 🚀 Quick Start with Just
+
+For a streamlined experience, use the [Just](https://github.com/casey/just) task runner:
+
+- `just` — List all available commands.
+- `just server-run` — Start the Spring Boot server.
+- `just db-up` — Start PostgreSQL via Docker.
+- `just android-run` — Run on Android.
+- `just desktop-run` — Run on Desktop (JVM).
+
+---
+
 ### Build and Run Android Application
 
 To build and run the development version of the Android app, use the run configuration from the run widget

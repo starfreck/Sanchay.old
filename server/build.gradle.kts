@@ -14,7 +14,7 @@ description = "Your personal space to capture notes, manage tasks, and stay on t
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 

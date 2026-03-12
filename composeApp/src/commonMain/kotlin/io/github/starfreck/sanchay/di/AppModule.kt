@@ -4,6 +4,7 @@ import io.github.starfreck.sanchay.ui.notes.NoteEditorViewModel
 import io.github.starfreck.sanchay.ui.notes.NotesViewModel
 import io.github.starfreck.sanchay.ui.tasks.TaskEditorViewModel
 import io.github.starfreck.sanchay.ui.tasks.TasksViewModel
+import io.github.starfreck.sanchay.ui.calendar.CalendarViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -18,4 +19,6 @@ val appModule = module {
     
     viewModel { TasksViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { params -> TaskEditorViewModel(params.get(), get(), get(), get(), get()) }
+
+    viewModel { CalendarViewModel() }
 }

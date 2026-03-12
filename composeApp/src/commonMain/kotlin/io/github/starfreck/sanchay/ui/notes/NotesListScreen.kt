@@ -13,8 +13,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NotesListScreen(
     onNoteClick: (Long) -> Unit,
     onCreateNote: () -> Unit,
+    onOpenSettings: () -> Unit = {},
     viewModel: NotesViewModel = koinViewModel(),
 ) {
     val notes by viewModel.notes.collectAsState()
@@ -43,14 +48,28 @@ fun NotesListScreen(
 
     Scaffold(
         topBar = {
-            SanchaySearchBar(
-                query = searchQuery,
-                onQueryChange = viewModel::onSearchQueryChanged,
-                placeholder = "Search notes",
+            val navSuiteType = androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+                .calculateFromAdaptiveInfo(androidx.compose.material3.adaptive.currentWindowAdaptiveInfo())
+            val isMobile = navSuiteType == androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType.NavigationBar
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 4.dp),
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SanchaySearchBar(
+                    query = searchQuery,
+                    onQueryChange = viewModel::onSearchQueryChanged,
+                    placeholder = "Search notes",
+                    modifier = Modifier.weight(1f),
+                )
+                if (isMobile) {
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                    }
+                }
+            }
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(

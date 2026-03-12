@@ -23,18 +23,15 @@ fun SanchayNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.NotesList,
+        startDestination = Screen.TasksList,
         modifier = modifier.fillMaxSize(),
     ) {
         // Notes
         composable<Screen.NotesList> {
             NotesListScreen(
-                onNoteClick = { noteId ->
-                    navController.navigate(Screen.NoteEditor(noteId))
-                },
-                onCreateNote = {
-                    navController.navigate(Screen.NoteEditor())
-                },
+                onNoteClick = { noteId -> navController.navigate(Screen.NoteEditor(noteId)) },
+                onCreateNote = { navController.navigate(Screen.NoteEditor()) },
+                onOpenSettings = { navController.navigate(Screen.Settings) }
             )
         }
 
@@ -46,15 +43,11 @@ fun SanchayNavHost(
             )
         }
 
-        // Tasks
         composable<Screen.TasksList> {
             TasksListScreen(
-                onTaskClick = { taskId ->
-                    navController.navigate(Screen.TaskEditor(taskId))
-                },
-                onCreateTask = {
-                    navController.navigate(Screen.TaskEditor())
-                },
+                onTaskClick = { taskId -> navController.navigate(Screen.TaskEditor(taskId)) },
+                onCreateTask = { navController.navigate(Screen.TaskEditor()) },
+                onOpenSettings = { navController.navigate(Screen.Settings) }
             )
         }
 
@@ -66,9 +59,15 @@ fun SanchayNavHost(
             )
         }
 
+        // Calendar
+        composable<Screen.Calendar> {
+            io.github.starfreck.sanchay.ui.calendar.CalendarScreen(
+                onOpenSettings = { navController.navigate(Screen.Settings) }
+            )
+        }
+
         // Settings
         composable<Screen.Settings> {
-            // Future
             Text("Settings — Coming Soon")
         }
     }

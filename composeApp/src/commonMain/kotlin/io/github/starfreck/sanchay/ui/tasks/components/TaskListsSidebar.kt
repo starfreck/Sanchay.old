@@ -39,128 +39,141 @@ fun TaskListsSidebar(
 ) {
     var newListText by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .width(240.dp)
-            .padding(12.dp)
-    ) {
-        Text(
-            text = "Sanchay Tasks",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            item {
-                SidebarItem(
-                    icon = Icons.Outlined.LightMode,
-                    label = "My Day",
-                    selected = selectedListId == TasksViewModel.LIST_ID_MY_DAY,
-                    onClick = { onListSelected(TasksViewModel.LIST_ID_MY_DAY) }
-                )
-            }
-            
-            item {
-                SidebarItem(
-                    icon = Icons.Outlined.StarBorder,
-                    label = "Important",
-                    selected = selectedListId == TasksViewModel.LIST_ID_IMPORTANT,
-                    onClick = { onListSelected(TasksViewModel.LIST_ID_IMPORTANT) }
-                )
-            }
-
-            item {
-                SidebarItem(
-                    icon = Icons.Outlined.CalendarToday,
-                    label = "Planned",
-                    selected = selectedListId == TasksViewModel.LIST_ID_PLANNED,
-                    onClick = { onListSelected(TasksViewModel.LIST_ID_PLANNED) }
-                )
-            }
-
-            item {
-                SidebarItem(
-                    icon = Icons.Default.AllInclusive,
-                    label = "All Tasks",
-                    selected = selectedListId == null || selectedListId == TasksViewModel.LIST_ID_ALL,
-                    onClick = { onListSelected(null) }
-                )
-            }
-
-            item {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            }
-
-            items(taskLists, key = { it.id }) { list ->
-                SidebarItem(
-                    icon = Icons.AutoMirrored.Filled.List,
-                    label = list.name,
-                    selected = selectedListId == list.id,
-                    onClick = { onListSelected(list.id) },
-                    trailingIcon = {
-                        IconButton(onClick = { onDeleteList(list.id) }) {
-                            Icon(Icons.Default.DeleteOutline, contentDescription = "Delete list", modifier = Modifier.size(18.dp))
-                        }
-                    }
-                )
-            }
-        }
-
-        // New List Entry
-        Surface(
+    Row(modifier = modifier.fillMaxHeight()) {
+        Column(
             modifier = Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth()
-                .height(36.dp),
-            shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                .width(240.dp)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(12.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 8.dp)
+            Text(
+                text = "Tasks",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                    if (newListText.isEmpty()) {
-                        Text(
-                            text = "New list",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    }
-                    BasicTextField(
-                        value = newListText,
-                        onValueChange = { newListText = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface
-                        ),
-                        cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                if (newListText.isNotBlank()) {
-                                    onCreateList(newListText)
-                                    newListText = ""
-                                }
+                item {
+                    SidebarItem(
+                        icon = Icons.Outlined.LightMode,
+                        label = "My Day",
+                        selected = selectedListId == TasksViewModel.LIST_ID_MY_DAY,
+                        onClick = { onListSelected(TasksViewModel.LIST_ID_MY_DAY) }
+                    )
+                }
+
+                item {
+                    SidebarItem(
+                        icon = Icons.Outlined.StarBorder,
+                        label = "Important",
+                        selected = selectedListId == TasksViewModel.LIST_ID_IMPORTANT,
+                        onClick = { onListSelected(TasksViewModel.LIST_ID_IMPORTANT) }
+                    )
+                }
+
+                item {
+                    SidebarItem(
+                        icon = Icons.Outlined.CalendarToday,
+                        label = "Planned",
+                        selected = selectedListId == TasksViewModel.LIST_ID_PLANNED,
+                        onClick = { onListSelected(TasksViewModel.LIST_ID_PLANNED) }
+                    )
+                }
+
+                item {
+                    SidebarItem(
+                        icon = Icons.Default.AllInclusive,
+                        label = "All Tasks",
+                        selected = selectedListId == null || selectedListId == TasksViewModel.LIST_ID_ALL,
+                        onClick = { onListSelected(null) }
+                    )
+                }
+
+                item {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                }
+
+                items(taskLists, key = { it.id }) { list ->
+                    SidebarItem(
+                        icon = Icons.AutoMirrored.Filled.List,
+                        label = list.name,
+                        selected = selectedListId == list.id,
+                        onClick = { onListSelected(list.id) },
+                        trailingIcon = {
+                            IconButton(onClick = { onDeleteList(list.id) }) {
+                                Icon(
+                                    Icons.Default.DeleteOutline,
+                                    contentDescription = "Delete list",
+                                    modifier = Modifier.size(18.dp)
+                                )
                             }
-                        )
+                        }
                     )
                 }
             }
+
+            // New List Entry
+            Surface(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxWidth()
+                    .height(36.dp),
+                shape = MaterialTheme.shapes.small,
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                        if (newListText.isEmpty()) {
+                            Text(
+                                text = "New list",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            )
+                        }
+                        BasicTextField(
+                            value = newListText,
+                            onValueChange = { newListText = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface
+                            ),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    if (newListText.isNotBlank()) {
+                                        onCreateList(newListText)
+                                        newListText = ""
+                                    }
+                                }
+                            )
+                        )
+                    }
+                }
+            }
         }
+        
+        VerticalDivider(
+            modifier = Modifier.fillMaxHeight(),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+        )
     }
 }
 

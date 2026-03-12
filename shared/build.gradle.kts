@@ -16,6 +16,7 @@ kotlin {
     
     jvm()
     
+    /*
     js {
         browser()
     }
@@ -24,36 +25,37 @@ kotlin {
     wasmJs {
         browser()
     }
+    */
     
     // Create a non-web intermediate source set for Room (not supported on JS/WasmJS)
     applyDefaultHierarchyTemplate()
     
     sourceSets {
-        // Shared source set for platforms that support Room (Android, iOS, JVM)
-        val nativeAndJvmMain = sourceSets.create("nativeAndJvmMain") {
-            dependsOn(commonMain.get())
+        val commonMain by getting {
+            dependencies {
+                // Room KMP
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
+
+                // Kotlinx
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization.json)
+                
+                // Koin (for SharedModule)
+                implementation(libs.koin.core)
+            }
         }
-        androidMain.get().dependsOn(nativeAndJvmMain)
-        iosMain.get().dependsOn(nativeAndJvmMain)
-        jvmMain.get().dependsOn(nativeAndJvmMain)
         
-        nativeAndJvmMain.dependencies {
-            // Room KMP (only on platforms that support it)
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
         }
-        
-        commonMain.dependencies {
-            // Kotlinx
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.kotlinx.serialization.json)
-            
-            // Koin (for SharedModule)
-            implementation(libs.koin.core)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
+
+        val androidMain by getting
+        val iosMain by getting
+        val jvmMain by getting
     }
 }
 

@@ -14,7 +14,7 @@ object DatabaseProvider {
     fun getDatabase(): SanchayDatabase {
         return database ?: getDatabaseBuilder()
             .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryCoroutineContext(Dispatchers.Default)
             .fallbackToDestructiveMigration(true)
             .build()
             .also { database = it }

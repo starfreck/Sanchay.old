@@ -26,4 +26,8 @@ sealed interface Screen {
     /** Settings screen. */
     @Serializable
     data object Settings : Screen
+
+    /** Calendar screen. */
+    @Serializable
+    data object Calendar : Screen
 }

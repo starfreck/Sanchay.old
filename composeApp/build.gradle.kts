@@ -30,6 +30,7 @@ kotlin {
         attributes.attribute(KotlinPlatformType.attribute, KotlinPlatformType.jvm)
     }
     
+    /*
     js {
         browser()
         binaries.executable()
@@ -40,6 +41,7 @@ kotlin {
         browser()
         binaries.executable()
     }
+    */
     
     sourceSets {
         androidMain.dependencies {

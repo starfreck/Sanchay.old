@@ -18,6 +18,9 @@ import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,12 +43,17 @@ import org.koin.compose.viewmodel.koinViewModel
 fun TasksListScreen(
     onTaskClick: (Long) -> Unit,
     onCreateTask: () -> Unit,
+    onOpenSettings: () -> Unit = {},
     viewModel: TasksViewModel = koinViewModel(),
 ) {
     val tasks by viewModel.tasks.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val taskLists by viewModel.taskLists.collectAsState()
     val selectedListId by viewModel.selectedListId.collectAsState()
+
+    val navSuiteType = NavigationSuiteScaffoldDefaults
+        .calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
+    val isMobile = navSuiteType == NavigationSuiteType.NavigationBar
 
     val currentListName = when (selectedListId) {
         null, TasksViewModel.LIST_ID_ALL -> "All Tasks"
@@ -56,14 +64,16 @@ fun TasksListScreen(
     }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        TaskListsSidebar(
-            selectedListId = selectedListId,
-            taskLists = taskLists,
-            onListSelected = viewModel::onListSelected,
-            onCreateList = viewModel::onCreateList,
-            onDeleteList = viewModel::onDeleteList,
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
-        )
+        if (!isMobile) {
+            TaskListsSidebar(
+                selectedListId = selectedListId,
+                taskLists = taskLists,
+                onListSelected = viewModel::onListSelected,
+                onCreateList = viewModel::onCreateList,
+                onDeleteList = viewModel::onDeleteList,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+            )
+        }
 
         // Main Content
         Scaffold(
@@ -82,6 +92,11 @@ fun TasksListScreen(
                             if (searchQuery.isEmpty()) {
                                 IconButton(onClick = { viewModel.onSearchQueryChanged(" ") }) {
                                     Icon(Icons.Default.Search, contentDescription = "Search")
+                                }
+                            }
+                            if (isMobile) {
+                                IconButton(onClick = onOpenSettings) {
+                                    Icon(Icons.Default.Settings, contentDescription = "Settings")
                                 }
                             }
                             IconButton(onClick = {}) {

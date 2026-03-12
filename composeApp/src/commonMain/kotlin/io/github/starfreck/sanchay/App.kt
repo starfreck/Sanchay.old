@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -27,23 +28,27 @@ fun App() {
 
         val topLevelDestinations = listOf(
             TopLevelDestination(
-                route = Screen.NotesList,
-                icon = Icons.Default.Description,
-                label = "Notes"
-            ),
-            TopLevelDestination(
                 route = Screen.TasksList,
                 icon = Icons.Default.Checklist,
                 label = "Tasks"
             ),
             TopLevelDestination(
-                route = Screen.Settings,
-                icon = Icons.Default.Settings,
-                label = "Settings"
+                route = Screen.NotesList,
+                icon = Icons.Default.Description,
+                label = "Notes"
+            ),
+            TopLevelDestination(
+                route = Screen.Calendar,
+                icon = Icons.Default.DateRange,
+                label = "Calendar"
             )
         )
 
+        val navSuiteType = androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+            .calculateFromAdaptiveInfo(androidx.compose.material3.adaptive.currentWindowAdaptiveInfo())
+
         NavigationSuiteScaffold(
+            layoutType = navSuiteType,
             navigationSuiteItems = {
                 topLevelDestinations.forEach { destination ->
                     item(
@@ -59,6 +64,27 @@ fun App() {
                         },
                         icon = { Icon(destination.icon, contentDescription = destination.label) },
                         label = { Text(destination.label) }
+                    )
+                }
+                
+                // Settings - For Desktop/Rail, we'll put it in the nav suite.
+                // For Mobile, it will be in the top bar of individual screens.
+                // NavigationSuiteScaffold handles the switching between Rail/BottomBar.
+                // We can use the layoutType to decide.
+                if (navSuiteType != androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType.NavigationBar) {
+                    item(
+                        selected = currentDestination?.hierarchy?.any { it.hasRoute(Screen.Settings::class) } == true,
+                        onClick = {
+                            navController.navigate(Screen.Settings) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                        label = { Text("Settings") }
                     )
                 }
             }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import io.github.starfreck.sanchay.domain.model.Note
 import io.github.starfreck.sanchay.domain.model.NoteColor
 import io.github.starfreck.sanchay.theme.toColor
+import io.github.starfreck.sanchay.ui.components.SanchaySearchBar
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -42,35 +43,14 @@ fun NotesListScreen(
 
     Scaffold(
         topBar = {
-            SearchBar(
-                inputField = {
-                    SearchBarDefaults.InputField(
-                        query = searchQuery,
-                        onQueryChange = viewModel::onSearchQueryChanged,
-                        onSearch = {},
-                        expanded = false,
-                        onExpandedChange = {},
-                        placeholder = { Text("Search notes") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                        trailingIcon = {
-                            AnimatedVisibility(
-                                visible = searchQuery.isNotEmpty(),
-                                enter = fadeIn(),
-                                exit = fadeOut(),
-                            ) {
-                                IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
-                                }
-                            }
-                        },
-                    )
-                },
-                expanded = false,
-                onExpandedChange = {},
+            SanchaySearchBar(
+                query = searchQuery,
+                onQueryChange = viewModel::onSearchQueryChanged,
+                placeholder = "Search notes",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {}
+                    .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 4.dp),
+            )
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -103,13 +83,13 @@ fun NotesListScreen(
             }
         } else {
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(160.dp),
+                columns = StaggeredGridCells.Adaptive(140.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalItemSpacing = 8.dp,
+                contentPadding = PaddingValues(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalItemSpacing = 6.dp,
             ) {
                 items(notes, key = { it.id }) { note ->
                     NoteCard(

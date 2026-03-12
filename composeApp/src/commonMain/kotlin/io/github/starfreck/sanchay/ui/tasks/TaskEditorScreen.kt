@@ -63,16 +63,16 @@ fun TaskEditorScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             // --- Title ---
             TextField(
                 value = task.title,
                 onValueChange = viewModel::onTitleChanged,
-                placeholder = { Text("Task title", style = MaterialTheme.typography.headlineSmall) },
+                placeholder = { Text("Task title", style = MaterialTheme.typography.titleLarge) },
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = MaterialTheme.typography.headlineSmall,
+                textStyle = MaterialTheme.typography.titleLarge,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
                     unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
@@ -114,6 +114,7 @@ fun TaskEditorScreen(
                         focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
                         unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
                     ),
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     singleLine = true
                 )
                 if (nextStepTitle.isNotBlank()) {
@@ -126,7 +127,7 @@ fun TaskEditorScreen(
                 }
             }
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // --- Detail Actions ---
             DetailActionItem(
@@ -150,10 +151,10 @@ fun TaskEditorScreen(
                 onClick = { /* Open due date picker */ }
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
             // --- List & Priority Selectors ---
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 // List Selector
                 var showListMenu by remember { mutableStateOf(false) }
                 val currentList = taskLists.find { it.id == task.listId }
@@ -164,7 +165,7 @@ fun TaskEditorScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     Row(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.List, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -188,7 +189,7 @@ fun TaskEditorScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     Row(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.PriorityHigh, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -209,8 +210,10 @@ fun TaskEditorScreen(
             OutlinedTextField(
                 value = task.description,
                 onValueChange = viewModel::onDescriptionChanged,
-                placeholder = { Text("Add note") },
-                modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
+                placeholder = { Text("Add note", style = MaterialTheme.typography.bodyMedium) },
+                modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                shape = MaterialTheme.shapes.small,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                 )
@@ -235,20 +238,20 @@ fun DetailActionItem(
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 12.dp),
+            modifier = Modifier.padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 icon,
                 contentDescription = null,
                 tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(20.dp)
             )
             Spacer(Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     label,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
                 if (value != null) {

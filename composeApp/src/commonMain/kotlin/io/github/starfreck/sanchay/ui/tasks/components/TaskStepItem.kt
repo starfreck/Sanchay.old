@@ -25,7 +25,7 @@ fun TaskStepItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onToggle) {
@@ -47,7 +47,7 @@ fun TaskStepItem(
                 focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
                 unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
             ),
-            textStyle = MaterialTheme.typography.bodyLarge.copy(
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
                 textDecoration = if (step.isCompleted) TextDecoration.LineThrough else TextDecoration.None
             ),
             singleLine = true

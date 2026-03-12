@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.starfreck.sanchay.domain.model.Task
 import io.github.starfreck.sanchay.ui.tasks.components.TaskListsSidebar
+import io.github.starfreck.sanchay.ui.components.SanchaySearchBar
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -88,27 +91,12 @@ fun TasksListScreen(
                     )
                     
                     if (searchQuery.isNotEmpty()) {
-                        SearchBar(
-                            inputField = {
-                                SearchBarDefaults.InputField(
-                                    query = searchQuery.trim(),
-                                    onQueryChange = viewModel::onSearchQueryChanged,
-                                    onSearch = {},
-                                    expanded = false,
-                                    onExpandedChange = {},
-                                    placeholder = { Text("Search tasks") },
-                                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                                    trailingIcon = {
-                                        IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
-                                            Icon(Icons.Default.Close, contentDescription = "Clear")
-                                        }
-                                    },
-                                )
-                            },
-                            expanded = false,
-                            onExpandedChange = {},
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                        ) {}
+                        SanchaySearchBar(
+                            query = searchQuery,
+                            onQueryChange = viewModel::onSearchQueryChanged,
+                            placeholder = "Search tasks",
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+                        )
                     }
                 }
             }
@@ -121,8 +109,8 @@ fun TasksListScreen(
                 // Task List
                 LazyColumn(
                     modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
                     items(tasks, key = { it.id }) { task ->
                         TaskItem(
@@ -139,7 +127,7 @@ fun TasksListScreen(
                     onAddTask = viewModel::onQuickAddTask,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
                 )
             }
         }
@@ -154,45 +142,49 @@ private fun QuickAddTaskField(
     var text by remember { mutableStateOf("") }
     
     Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
+        modifier = modifier.height(36.dp),
+        shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        tonalElevation = 2.dp
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 12.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                placeholder = { Text("Add a task", style = MaterialTheme.typography.bodyLarge) },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                singleLine = true,
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        if (text.isNotBlank()) {
-                            onAddTask(text)
-                            text = ""
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                if (text.isEmpty()) {
+                    Text(
+                        text = "Add a task",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                }
+                BasicTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                    singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (text.isNotBlank()) {
+                                onAddTask(text)
+                                text = ""
+                            }
                         }
-                    }
-                ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-            )
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+                )
+            }
         }
     }
 }
@@ -211,7 +203,7 @@ private fun TaskItem(
         shape = MaterialTheme.shapes.medium,
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(

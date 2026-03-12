@@ -1,19 +1,15 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
     jvmToolchain(25)
-    
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
     
     iosArm64()
     iosSimulatorArm64()
@@ -29,9 +25,31 @@ kotlin {
         browser()
     }
     
+    // Create a non-web intermediate source set for Room (not supported on JS/WasmJS)
+    applyDefaultHierarchyTemplate()
+    
     sourceSets {
+        // Shared source set for platforms that support Room (Android, iOS, JVM)
+        val nativeAndJvmMain = sourceSets.create("nativeAndJvmMain") {
+            dependsOn(commonMain.get())
+        }
+        androidMain.get().dependsOn(nativeAndJvmMain)
+        iosMain.get().dependsOn(nativeAndJvmMain)
+        jvmMain.get().dependsOn(nativeAndJvmMain)
+        
+        nativeAndJvmMain.dependencies {
+            // Room KMP (only on platforms that support it)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+        }
+        
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            // Kotlinx
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
+            
+            // Koin (for SharedModule)
+            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -39,6 +57,21 @@ kotlin {
     }
 }
 
+// Room KSP for each target (only non-web)
+dependencies {
+    listOf(
+        "kspAndroid",
+        "kspIosArm64",
+        "kspIosSimulatorArm64",
+        "kspJvm",
+    ).forEach { targetName ->
+        add(targetName, libs.room.compiler)
+    }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
 kotlin.androidLibrary {
     namespace = "io.github.starfreck.sanchay.shared"

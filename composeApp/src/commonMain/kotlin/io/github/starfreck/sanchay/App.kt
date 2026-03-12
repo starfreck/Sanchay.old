@@ -1,49 +1,75 @@
 package io.github.starfreck.sanchay
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
-
-import sanchay.composeapp.generated.resources.Res
-import sanchay.composeapp.generated.resources.compose_multiplatform
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import io.github.starfreck.sanchay.navigation.SanchayNavHost
+import io.github.starfreck.sanchay.navigation.Screen
+import io.github.starfreck.sanchay.theme.SanchayTheme
 
 @Composable
-@Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+    SanchayTheme {
+        val navController = rememberNavController()
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+
+        val topLevelDestinations = listOf(
+            TopLevelDestination(
+                route = Screen.NotesList,
+                icon = Icons.Default.Description,
+                label = "Notes"
+            ),
+            TopLevelDestination(
+                route = Screen.TasksList,
+                icon = Icons.Default.Checklist,
+                label = "Tasks"
+            ),
+            TopLevelDestination(
+                route = Screen.Settings,
+                icon = Icons.Default.Settings,
+                label = "Settings"
+            )
+        )
+
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                topLevelDestinations.forEach { destination ->
+                    item(
+                        selected = currentDestination?.hierarchy?.any { it.hasRoute(destination.route::class) } == true,
+                        onClick = {
+                            navController.navigate(destination.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        icon = { Icon(destination.icon, contentDescription = destination.label) },
+                        label = { Text(destination.label) }
+                    )
                 }
             }
+        ) {
+            SanchayNavHost(navController = navController)
         }
     }
 }
+
+private data class TopLevelDestination(
+    val route: Screen,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val label: String
+)

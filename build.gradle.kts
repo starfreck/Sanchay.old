@@ -4,9 +4,13 @@ buildscript {
         google()
     }
     dependencies {
-        // AGP requires JAXB which was removed in Java 11
-        classpath("javax.xml.bind:jaxb-api:2.3.1")
-        classpath("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+        // AGP and Kotlin IDE import require JAXB which was removed in Java 11.
+        // Using 2.3.x versions because they still use the 'javax.xml.bind' package 
+        // that older components expect. Updated to newer maintenance releases
+        // for better compatibility with recent JDKs.
+        classpath("jakarta.xml.bind:jakarta.xml.bind-api:2.3.3")
+        classpath("org.glassfish.jaxb:jaxb-runtime:2.3.9")
+        classpath("com.sun.activation:javax.activation:1.2.0")
     }
 }
 

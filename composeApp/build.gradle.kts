@@ -23,6 +23,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Use freeCompilerArgs because the bundleId property might not be directly available in this DSL version
+            freeCompilerArgs = freeCompilerArgs + "-Xbinary=bundleId=io.github.starfreck.sanchay"
         }
     }
     

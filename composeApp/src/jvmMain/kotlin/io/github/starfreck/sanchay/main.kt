@@ -5,16 +5,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import io.github.starfreck.sanchay.di.appModule
-import io.github.starfreck.sanchay.di.sharedModule
-import org.koin.core.context.startKoin
+import io.github.starfreck.sanchay.di.initKoin
 import java.awt.Dimension
 
 fun main() = application {
     // Initialize Koin
-    startKoin {
-        modules(sharedModule, appModule)
-    }
+    initKoin()
 
     Window(
         onCloseRequest = ::exitApplication,
